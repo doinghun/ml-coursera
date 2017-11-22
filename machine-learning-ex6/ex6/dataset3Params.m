@@ -23,7 +23,21 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+Cvec = [0.01; 0.03; 0.1; 0.3; 1; 3; 10; 30];
+sigmavec = [0.01; 0.03; 0.1; 0.3; 1; 3; 10; 30];
+min_error = 500000;
 
+for i = 1:length(Cvec)
+    for j = 1:length(sigmavec)
+        model = svmTrain(X, y, Cvec(i), @(u, v)(gaussianKernel(u, v, sigmavec(j))));
+        predictions = svmPredict(model, Xval);
+        error = mean(double(predictions ~= yval));
+        if min_error > error
+            min_error = error;
+            C = Cvec(i);
+            sigma = sigmavec(j);
+        end
+    end
 
 
 
